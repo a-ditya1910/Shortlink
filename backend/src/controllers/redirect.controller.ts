@@ -55,10 +55,10 @@ export async function redirect(req: Request, res: Response, next: NextFunction) 
 // runs in background after redirect is sent — click failure never breaks redirect
 async function recordClick(req: Request, linkId: number) {
   try {
-    console.log(`[IP DEBUG] req.ip=${req.ip} x-forwarded-for=${req.headers["x-forwarded-for"]} cf-connecting-ip=${req.headers["cf-connecting-ip"]}`)
-
-    const raw = req.ip || null
-    // Render (and most proxies) send IPv4-mapped IPv6: "::ffff:1.2.3.4" — strip prefix so geoip can parse it
+    // cf-connecting-ip is set by Cloudflare (Render's edge) — always a clean IPv4, most reliable
+    // fallback to req.ip and strip IPv4-mapped IPv6 prefix (::ffff:1.2.3.4 → 1.2.3.4)
+    const cfIp = req.headers["cf-connecting-ip"] as string | undefined
+    const raw = cfIp || req.ip || null
     const ip = raw?.startsWith("::ffff:") ? raw.slice(7) : raw
     const device = getDevice(req.headers["user-agent"])
 

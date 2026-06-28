@@ -85,7 +85,7 @@ export default function LinkCard({ link, onDeleted, onUpdated }: Props) {
               rel="noreferrer"
               className="text-indigo-600 font-medium text-sm hover:text-indigo-800"
             >
-              {link.shortUrl.replace("http://", "")}
+              {link.shortUrl.replace(/https?:\/\//, "")}
             </a>
             <button
               onClick={handleCopy}
