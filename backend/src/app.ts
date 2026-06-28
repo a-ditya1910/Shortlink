@@ -9,7 +9,7 @@ import { errorHandler } from "./middleware/errorHandler"
 const app = express()
 
 app.use(cors({
-  origin: env.frontendUrl,
+  origin: env.nodeEnv === "production" ? env.frontendUrl : true,
   credentials: true,
 }))
 
