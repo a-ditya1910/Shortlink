@@ -35,7 +35,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     fetchLinks()
-    // poll every 15s so click counts update without manual refresh
+    // poll every 5s so click counts update without manual refresh
     const timer = setInterval(fetchLinks, 5000)
     return () => clearInterval(timer)
   }, [])

@@ -55,10 +55,11 @@ export async function redirect(req: Request, res: Response, next: NextFunction) 
 // runs in background after redirect is sent — click failure never breaks redirect
 async function recordClick(req: Request, linkId: number) {
   try {
-    const ip = req.ip || null
+    const raw = req.ip || null
+    // Render (and most proxies) send IPv4-mapped IPv6: "::ffff:1.2.3.4" — strip prefix so geoip can parse it
+    const ip = raw?.startsWith("::ffff:") ? raw.slice(7) : raw
     const device = getDevice(req.headers["user-agent"])
 
-    // geoip only works for real public IPs — localhost (::1, 127.0.0.1) returns null
     let country: string | null = null
     if (ip && ip !== "127.0.0.1" && ip !== "::1") {
       const geo = geoip.lookup(ip)
